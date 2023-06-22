@@ -1,18 +1,35 @@
 import { Product } from "@/interfaces";
-import mongoose, { Model, Schema } from "mongoose";
 
-export interface IProduct extends Product { }
+import mongoose, { Schema, Model } from "mongoose";
+
 
 const productSchema = new Schema({
+    description: { type: String, required: true },
+    images: [{ type: String }],
+    inStock: { type: Number, required: true, default: 0 },
+    price: { type: Number, required: true, default: 0 },
+    sizes: [{
+        type: String,
+        enum: {
+            values: ['XS', 'S', 'M', 'L', 'XL', 'XXL', 'XXXL'],
+            message: '{VALUE} No es tu tamaño permitido. '
+        }
+    }],
+    slug: { type: String, required: true, unique: true },
+    tags: [{ type: String }],
     title: { type: String, required: true },
-    imageUrl: { type: String, required: true },
-    price: { type: Number, required: true },
-    sizes: { type: Array, required: true },
-    stock: { type: Number, required: true }
-});
+    type: {
+        type: String,
+        enum: {
+            values: ['shirts', 'pants', 'hoodies', 'hats'],
+            message: '{VALUE} No es un tipo permitido. '
+        }
+    },
+}, { timestamps: true });
 
-const productModel: Model<IProduct> = mongoose.models.Product || mongoose.model('Product', productSchema);
+productSchema.index({ title: 'text', tags: 'text' });
 
-export default productModel;
+const Product: Model<Product> = mongoose.models.Product || mongoose.model('Product', productSchema);
 
+export default Product;
 

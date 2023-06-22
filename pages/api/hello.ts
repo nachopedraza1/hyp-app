@@ -1,7 +1,8 @@
+import type { NextApiRequest, NextApiResponse } from 'next';
+
 import { db } from '@/database'
-import { products } from '@/database/insert-data';
 import { Product } from '@/models';
-import type { NextApiRequest, NextApiResponse } from 'next'
+import { initialData } from '@/database/insert-data';
 
 type Data = {
   message: string
@@ -15,7 +16,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
 
   await db.connect();
   await Product.deleteMany();
-  await Product.insertMany(products);
+  await Product.insertMany(initialData.products);
   await db.disconnect();
 
   return res.status(200).json({ message: 'Proceso realizado correctamente.' })
