@@ -1,4 +1,4 @@
-import { Product } from "@/interfaces";
+import { IProduct } from "@/interfaces";
 
 import mongoose, { Schema, Model } from "mongoose";
 
@@ -29,7 +29,7 @@ const productSchema = new Schema({
 
 productSchema.index({ title: 'text', tags: 'text' });
 
-const Product: Model<Product> = mongoose.models.Product || mongoose.model('Product', productSchema);
+const Product: Model<IProduct> = mongoose.models.Product || mongoose.model('Product', productSchema);
 
 export default Product;
 
