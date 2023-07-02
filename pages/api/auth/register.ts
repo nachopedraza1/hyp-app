@@ -2,12 +2,18 @@ import type { NextApiRequest, NextApiResponse } from 'next';
 
 import { db } from '@/database';
 import { User } from '@/models';
-import { isEmail } from '@/utils';
+import { isEmail, signToken } from '@/utils';
+import { IUser } from '@/interfaces';
 
 import bcrypt from 'bcryptjs';
 
+interface DataUser extends IUser {
+    token: string
+}
+
 type Data =
     | { message: string }
+    | DataUser
 
 export default function handler(req: NextApiRequest, res: NextApiResponse<Data>) {
     switch (req.method) {
@@ -38,7 +44,7 @@ const registerUser = async (req: NextApiRequest, res: NextApiResponse<Data>) => 
     await db.connect();
     const isExistEmail = await User.findOne({ email });
 
-    if (!isExistEmail) {
+    if (isExistEmail) {
         await db.disconnect();
         return res.status(400).json({ message: 'El email ya esta en uso.' })
     }
@@ -46,7 +52,20 @@ const registerUser = async (req: NextApiRequest, res: NextApiResponse<Data>) => 
     const newUser = new User({
         name,
         email,
-        password: 
+        password: bcrypt.hashSync(password)
     })
 
+    await newUser.save();
+    await db.disconnect();
+
+    const { _id, role } = newUser;
+
+    const token = signToken(_id, email);
+
+    res.status(200).json({
+        token,
+        email,
+        name,
+        role,
+    });
 }
