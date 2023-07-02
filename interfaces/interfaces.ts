@@ -16,3 +16,13 @@ export interface IProduct {
 
 export type ISize = 'XS' | 'S' | 'M' | 'L' | 'XL' | 'XXL' | 'XXXL';
 export type IType = 'shirts' | 'pants' | 'hoodies' | 'hats';
+
+export interface IUser {
+    _id?: string,
+    name: string,
+    email: string,
+    password?: string,
+    role: 'client' | 'admin',
+    cratedAt?: string,
+    updatedAt?: string,
+}
