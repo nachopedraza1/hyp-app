@@ -1,4 +1,4 @@
-import { useState, useContext } from 'react';
+import { useState, useContext, useEffect } from 'react';
 import { GetServerSideProps, NextPage } from 'next';
 import { useRouter } from 'next/router';
 import NextLink from 'next/link';
@@ -9,6 +9,7 @@ import { isEmail } from '@/utils';
 import { Box, Button, Chip, Grid, Link, TextField, Typography } from '@mui/material';
 import { ErrorOutline } from '@mui/icons-material';
 import { AuthLayout } from '@/components/layouts';
+import { signIn, useSession } from 'next-auth/react';
 
 
 type FormData = {
@@ -21,20 +22,27 @@ const LoginPage: NextPage = () => {
 
     const router = useRouter();
 
+    const { data } = useSession();
+
+    useEffect(() => {
+        console.log(data);
+    }, [data])
+
+
     const { register, handleSubmit, formState: { errors } } = useForm<FormData>();
     const [showError, setShowError] = useState(false)
 
-    const onRegisterForm = async ({ email, password }: FormData) => {
-
+    const onLogin = async ({ email, password }: FormData) => {
+        await signIn('credentials', { email, password })
     }
 
     return (
         <AuthLayout title={'Ingresar'}>
-            <form noValidate>
+            <form onSubmit={handleSubmit(onLogin)} noValidate>
                 <Box sx={{ width: 350, padding: '10px 20px' }}>
                     <Grid container spacing={2}>
                         <Grid item xs={12}>
-                            <Typography variant='h1' component="h1">Ingresar</Typography>
+                            <Typography variant='h4'>Ingresar</Typography>
                             <Chip
                                 label="No reconocemos ese usuario / contraseña"
                                 color="error"
@@ -82,7 +90,7 @@ const LoginPage: NextPage = () => {
                                 size='large'
                                 fullWidth
                             >
-                                Registrame
+                                Ingresar
                             </Button>
                         </Grid>
 

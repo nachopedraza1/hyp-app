@@ -31,11 +31,11 @@ const RegisterPage: NextPage = () => {
 
     return (
         <AuthLayout title={'Registro'}>
-            <form noValidate>
+            <form onSubmit={handleSubmit(onRegisterForm)} noValidate>
                 <Box sx={{ width: 350, padding: '10px 20px' }}>
                     <Grid container spacing={2}>
                         <Grid item xs={12}>
-                            <Typography variant='h1' component="h1">Crear cuenta</Typography>
+                            <Typography variant='h4' component="h1">Crear cuenta</Typography>
                             <Chip
                                 label="No reconocemos ese usuario / contraseña"
                                 color="error"
