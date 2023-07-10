@@ -1,15 +1,15 @@
-import { useState, useContext, useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { GetServerSideProps, NextPage } from 'next';
 import { useRouter } from 'next/router';
 import NextLink from 'next/link';
 
+import { getProviders, getSession, signIn } from 'next-auth/react';
 import { useForm } from 'react-hook-form';
 import { isEmail } from '@/utils';
 
-import { Box, Button, Chip, Grid, Link, TextField, Typography } from '@mui/material';
+import { Box, Button, Chip, Divider, Grid, Link, TextField, Typography } from '@mui/material';
 import { ErrorOutline } from '@mui/icons-material';
 import { AuthLayout } from '@/components/layouts';
-import { signIn, useSession } from 'next-auth/react';
 
 
 type FormData = {
@@ -22,19 +22,21 @@ const LoginPage: NextPage = () => {
 
     const router = useRouter();
 
-    const { data } = useSession();
-
-    useEffect(() => {
-        console.log(data);
-    }, [data])
-
-
     const { register, handleSubmit, formState: { errors } } = useForm<FormData>();
     const [showError, setShowError] = useState(false)
 
     const onLogin = async ({ email, password }: FormData) => {
         await signIn('credentials', { email, password })
     }
+
+    const [providers, setProviders] = useState<any>({});
+
+    useEffect(() => {
+        getProviders().then(prov => {
+            // console.log({prov});
+            setProviders(prov)
+        })
+    }, [])
 
     return (
         <AuthLayout title={'Ingresar'}>
@@ -96,7 +98,7 @@ const LoginPage: NextPage = () => {
 
                         <Grid item xs={12} display='flex' justifyContent='end'>
                             <NextLink
-                                href={router.query.p ? `/auth/login?p=${router.query.p}` : '/auth/login'}
+                                href={router.query.p ? `/auth/register?p=${router.query.p}` : '/auth/register'}
                                 passHref legacyBehavior
                             >
                                 <Link underline='always'>
@@ -104,11 +106,59 @@ const LoginPage: NextPage = () => {
                                 </Link>
                             </NextLink>
                         </Grid>
+
+                        <Grid item xs={12} display='flex' flexDirection='column' justifyContent='end'>
+                            <Divider sx={{ width: '100%', mb: 2 }} />
+                            {
+                                Object.values(providers).map((provider: any) => {
+
+                                    if (provider.id === 'credentials') return (<div key="credentials"></div>);
+
+                                    return (
+                                        <Button
+                                            key={provider.id}
+                                            variant="outlined"
+                                            fullWidth
+                                            color="primary"
+                                            sx={{ mb: 1 }}
+                                            onClick={() => signIn(provider.id)}
+                                        >
+                                            {provider.name}
+                                        </Button>
+                                    )
+
+                                })
+                            }
+
+                        </Grid>
                     </Grid>
                 </Box>
             </form>
         </AuthLayout>
     )
+}
+
+
+export const getServerSideProps: GetServerSideProps = async ({ req, query }) => {
+
+    const session = await getSession({ req });
+
+    const { q = '/' } = query;
+
+    if (session) {
+        return {
+            redirect: {
+                destination: q.toString(),
+                permanent: false
+            }
+        }
+    }
+
+    return {
+        props: {
+
+        }
+    }
 }
 
 export default LoginPage;

@@ -2,18 +2,15 @@ import type { NextApiRequest, NextApiResponse } from 'next';
 
 import { db } from '@/database';
 import { User } from '@/models';
-import { isEmail, signToken } from '@/utils';
+import { isEmail } from '@/utils';
 import { IUser } from '@/interfaces';
 
 import bcrypt from 'bcryptjs';
 
-interface DataUser extends IUser {
-    token: string
-}
 
 type Data =
     | { message: string }
-    | DataUser
+    | IUser
 
 export default function handler(req: NextApiRequest, res: NextApiResponse<Data>) {
     switch (req.method) {
@@ -60,10 +57,9 @@ const registerUser = async (req: NextApiRequest, res: NextApiResponse<Data>) => 
 
     const { _id, role } = newUser;
 
-    const token = signToken(_id, email);
 
     res.status(200).json({
-        token,
+        _id,
         email,
         name,
         role,

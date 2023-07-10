@@ -1,4 +1,4 @@
-import { useState, useContext } from 'react';
+import { useState } from 'react';
 import { GetServerSideProps, NextPage } from 'next';
 import { useRouter } from 'next/router';
 import NextLink from 'next/link';
@@ -9,6 +9,7 @@ import { isEmail } from '@/utils';
 import { Box, Button, Chip, Grid, Link, TextField, Typography } from '@mui/material';
 import { ErrorOutline } from '@mui/icons-material';
 import { AuthLayout } from '@/components/layouts';
+import { getSession } from 'next-auth/react';
 
 
 type FormData = {
@@ -115,6 +116,30 @@ const RegisterPage: NextPage = () => {
             </form>
         </AuthLayout>
     )
+}
+
+
+
+export const getServerSideProps: GetServerSideProps = async ({ req, query }) => {
+
+    const session = await getSession({ req });
+
+    const { q = '/' } = query;
+
+    if (session) {
+        return {
+            redirect: {
+                destination: q.toString(),
+                permanent: false,
+            }
+        }
+    }
+
+    return {
+        props: {
+
+        }
+    }
 }
 
 export default RegisterPage;
