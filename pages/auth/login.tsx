@@ -7,7 +7,7 @@ import { getProviders, getSession, signIn } from 'next-auth/react';
 import { useForm } from 'react-hook-form';
 import { isEmail } from '@/utils';
 
-import { Box, Button, Chip, Divider, Grid, Link, TextField, Typography } from '@mui/material';
+import { Box, Button, Chip, Divider, Grid, InputLabel, Link, TextField, Typography } from '@mui/material';
 import { ErrorOutline } from '@mui/icons-material';
 import { AuthLayout } from '@/components/layouts';
 
@@ -33,7 +33,6 @@ const LoginPage: NextPage = () => {
 
     useEffect(() => {
         getProviders().then(prov => {
-            // console.log({prov});
             setProviders(prov)
         })
     }, [])
@@ -41,10 +40,10 @@ const LoginPage: NextPage = () => {
     return (
         <AuthLayout title={'Ingresar'}>
             <form onSubmit={handleSubmit(onLogin)} noValidate>
-                <Box sx={{ width: 350, padding: '10px 20px' }}>
+                <Box className="form-sign">
                     <Grid container spacing={2}>
                         <Grid item xs={12}>
-                            <Typography variant='h4'>Ingresar</Typography>
+                            <Typography variant='h4' fontWeight={600}>Login</Typography>
                             <Chip
                                 label="No reconocemos ese usuario / contraseña"
                                 color="error"
@@ -55,10 +54,12 @@ const LoginPage: NextPage = () => {
                         </Grid>
 
                         <Grid item xs={12}>
+                            <InputLabel>
+                                Ingresa tu email
+                            </InputLabel>
                             <TextField
                                 type="email"
-                                label="Correo"
-                                variant="filled"
+                                placeholder='Ingresa tu email'
                                 fullWidth
                                 {...register('email', {
                                     required: 'Este campo es requerido',
@@ -70,10 +71,12 @@ const LoginPage: NextPage = () => {
                             />
                         </Grid>
                         <Grid item xs={12}>
+                            <InputLabel>
+                                Ingresa tu contraseña
+                            </InputLabel>
                             <TextField
-                                label="Contraseña"
+                                placeholder='Ingresa tu contraseña'
                                 type='password'
-                                variant="filled"
                                 fullWidth
                                 {...register('password', {
                                     required: 'Este campo es requerido',
@@ -86,9 +89,8 @@ const LoginPage: NextPage = () => {
 
                         <Grid item xs={12}>
                             <Button
+                                variant='contained'
                                 type="submit"
-                                color="secondary"
-                                className='circular-btn'
                                 size='large'
                                 fullWidth
                             >
