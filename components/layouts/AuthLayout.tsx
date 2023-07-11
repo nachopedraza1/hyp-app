@@ -4,7 +4,6 @@ import Head from "next/head";
 
 
 import { Grid } from "@mui/material";
-import Image from "next/image";
 
 interface Props {
     title: string,
@@ -20,11 +19,11 @@ export const AuthLayout: FC<Props> = ({ children, title }) => {
             </Head>
             <main >
                 <Grid container alignItems="center" justifyContent="center" className="bg-auth">
+                    <Grid item xs={6} textAlign="center">
+
+                    </Grid>
                     <Grid item xs={6} display="flex" alignItems="center" justifyContent="center">
                         {children}
-                    </Grid>
-                    <Grid item xs={6} textAlign="center">
-                        
                     </Grid>
                 </Grid>
             </main>

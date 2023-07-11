@@ -3,37 +3,54 @@ import { createTheme } from "@mui/material";
 export const defaultTheme = createTheme({
     palette: {
         mode: 'light',
-        primary: {
-            main: '#ff8e94'
+        primary:{
+            main: "#ff8e94"
         }
     },
     components: {
         MuiOutlinedInput: {
             styleOverrides: {
                 root: {
-                    color: "gray",
+                    color: "black",
+                    borderRadius: 10,
                     "&.MuiOutlinedInput-root": {
-                        '&:hover fieldset': {
-                            borderColor: '#ff8e94',
+                        "& fieldset": {
+                            borderColor: "gray"
+                        }, '&:hover fieldset': {
+                            borderColor: 'gray',
+                        },
+                        '&.Mui-focused fieldset': {
+                            borderColor: "#ff8e94",
                         },
                     },
                 },
-
+                notchedOutline: {
+                    borderColor: "gray",
+                },
             }
         },
         MuiButton: {
             styleOverrides: {
                 root: {
                     fontWeight: "bold",
-                    color: '#ffff'
+                    color: '#ffff',
+                    borderRadius: 10,
                 }
             }
         },
         MuiInputLabel: {
             styleOverrides: {
                 root: {
-                    color: '#ffff',
+                    color: 'gray',
                     marginBottom: 4
+                }
+            }
+        },
+        MuiLink: {
+            styleOverrides: {
+                root: {
+                    textDecoration: 'none',
+                    marginLeft: 3,
                 }
             }
         }

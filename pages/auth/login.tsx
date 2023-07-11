@@ -2,15 +2,15 @@ import { useEffect, useState } from 'react';
 import { GetServerSideProps, NextPage } from 'next';
 import { useRouter } from 'next/router';
 import NextLink from 'next/link';
+import Image from 'next/image';
 
 import { getProviders, getSession, signIn } from 'next-auth/react';
 import { useForm } from 'react-hook-form';
 import { isEmail } from '@/utils';
 
-import { Box, Button, Chip, Divider, Grid, InputLabel, Link, TextField, Typography } from '@mui/material';
+import { Box, Button, Checkbox, Chip, Divider, FormControlLabel, FormGroup, Grid, Link, TextField, Typography } from '@mui/material';
 import { ErrorOutline } from '@mui/icons-material';
 import { AuthLayout } from '@/components/layouts';
-
 
 type FormData = {
     email: string;
@@ -44,6 +44,7 @@ const LoginPage: NextPage = () => {
                     <Grid container spacing={2}>
                         <Grid item xs={12}>
                             <Typography variant='h4' fontWeight={600}>Login</Typography>
+                            <Typography variant='h6'>Nos alegra verte de nuevo!</Typography>
                             <Chip
                                 label="No reconocemos ese usuario / contraseña"
                                 color="error"
@@ -54,11 +55,9 @@ const LoginPage: NextPage = () => {
                         </Grid>
 
                         <Grid item xs={12}>
-                            <InputLabel>
-                                Ingresa tu email
-                            </InputLabel>
                             <TextField
                                 type="email"
+                                label="Email"
                                 placeholder='Ingresa tu email'
                                 fullWidth
                                 {...register('email', {
@@ -71,12 +70,10 @@ const LoginPage: NextPage = () => {
                             />
                         </Grid>
                         <Grid item xs={12}>
-                            <InputLabel>
-                                Ingresa tu contraseña
-                            </InputLabel>
                             <TextField
                                 placeholder='Ingresa tu contraseña'
                                 type='password'
+                                label="Contraseña"
                                 fullWidth
                                 {...register('password', {
                                     required: 'Este campo es requerido',
@@ -85,7 +82,12 @@ const LoginPage: NextPage = () => {
                                 error={!!errors.password}
                                 helperText={errors.password?.message}
                             />
+                            <FormGroup>
+                                <FormControlLabel control={<Checkbox />} label="Recordame" />
+                            </FormGroup>
                         </Grid>
+
+
 
                         <Grid item xs={12}>
                             <Button
@@ -96,22 +98,13 @@ const LoginPage: NextPage = () => {
                             >
                                 Ingresar
                             </Button>
-                        </Grid>
 
-                        <Grid item xs={12} display='flex' justifyContent='end'>
-                            <NextLink
-                                href={router.query.p ? `/auth/register?p=${router.query.p}` : '/auth/register'}
-                                passHref legacyBehavior
-                            >
-                                <Link underline='always'>
-                                    ¿No tienes cuenta?
-                                </Link>
-                            </NextLink>
+                            <Typography textAlign="center" mt={1}> Olvidaste tu contraseña? </Typography>
                         </Grid>
 
                         <Grid item xs={12} display='flex' flexDirection='column' justifyContent='end'>
-                            <Divider sx={{ width: '100%', mb: 2 }} />
-                            {
+                            <Divider sx={{ width: '100%' }} >Or</Divider>
+                            {/* {
                                 Object.values(providers).map((provider: any) => {
 
                                     if (provider.id === 'credentials') return (<div key="credentials"></div>);
@@ -130,8 +123,33 @@ const LoginPage: NextPage = () => {
                                     )
 
                                 })
-                            }
+                            } */}
 
+                            <Grid container justifyContent="center" alignItems="center" mb={3}>
+                                <Button disableTouchRipple>
+                                    <Image src="/google.png" width={32} height={32} alt='google' />
+                                </Button>
+                                <Button disableTouchRipple>
+                                    <Image src="/facebook.png" width={32} height={32} alt='google' />
+                                </Button>
+                                <Button disableTouchRipple>
+                                    <Image src="/appled.png" width={32} height={32} alt='google' />
+                                </Button>
+                            </Grid>
+
+                            <Grid container justifyContent="center" textAlign="center">
+                                <Grid item xs={12} mb={1} mt={2}>
+                                    No tienes cuenta?
+                                    <NextLink
+                                        href={router.query.p ? `/auth/register?p=${router.query.p}` : '/auth/register'}
+                                        passHref legacyBehavior
+                                    >
+                                        <Link>
+                                            Registrate
+                                        </Link>
+                                    </NextLink>
+                                </Grid>
+                            </Grid>
                         </Grid>
                     </Grid>
                 </Box>
