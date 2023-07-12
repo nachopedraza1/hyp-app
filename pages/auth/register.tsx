@@ -1,19 +1,19 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { GetServerSideProps, NextPage } from 'next';
 import { useRouter } from 'next/router';
 import NextLink from 'next/link';
+import Image from 'next/image';
 
+import { getProviders, getSession, signIn } from 'next-auth/react';
 import { useForm } from 'react-hook-form';
 import { isEmail } from '@/utils';
 
-import { Box, Button, Chip, Grid, Link, TextField, Typography } from '@mui/material';
+import { Box, Button, Checkbox, Chip, Divider, FormControlLabel, FormGroup, Grid, Link, TextField, Typography } from '@mui/material';
 import { ErrorOutline } from '@mui/icons-material';
 import { AuthLayout } from '@/components/layouts';
-import { getSession } from 'next-auth/react';
-
 
 type FormData = {
-    name: string;
+    name: string,
     email: string;
     password: string;
 };
@@ -26,17 +26,25 @@ const RegisterPage: NextPage = () => {
     const { register, handleSubmit, formState: { errors } } = useForm<FormData>();
     const [showError, setShowError] = useState(false)
 
-    const onRegisterForm = async ({ name, email, password }: FormData) => {
-
+    const onRegister = async ({ email, password }: FormData) => {
+        await signIn('credentials', { email, password })
     }
+
+    const [providers, setProviders] = useState<any>({});
+
+    useEffect(() => {
+        getProviders().then(prov => {
+            setProviders(prov)
+        })
+    }, [])
 
     return (
         <AuthLayout title={'Registro'}>
-            <form onSubmit={handleSubmit(onRegisterForm)} noValidate>
-                <Box sx={{ width: 350, padding: '10px 20px' }}>
+            <form onSubmit={handleSubmit(onRegister)} noValidate>
+                <Box className="form-sign">
                     <Grid container spacing={2}>
                         <Grid item xs={12}>
-                            <Typography variant='h4' component="h1">Crear cuenta</Typography>
+                            <Typography variant='h4' fontWeight={600}>Registro</Typography>
                             <Chip
                                 label="No reconocemos ese usuario / contraseña"
                                 color="error"
@@ -48,22 +56,24 @@ const RegisterPage: NextPage = () => {
 
                         <Grid item xs={12}>
                             <TextField
-                                label="Nombre completo"
-                                variant="filled"
+                                type="text"
+                                label="Nombre"
+                                placeholder='Ingresa tu nombre'
                                 fullWidth
                                 {...register('name', {
                                     required: 'Este campo es requerido',
-                                    minLength: { value: 2, message: 'Mínimo 2 caracteres' }
+                                    minLength: { value: 2, message: 'Minimo 2 caracteres' }
                                 })}
                                 error={!!errors.name}
                                 helperText={errors.name?.message}
                             />
                         </Grid>
+
                         <Grid item xs={12}>
                             <TextField
                                 type="email"
-                                label="Correo"
-                                variant="filled"
+                                label="Email"
+                                placeholder='Ingresa tu email'
                                 fullWidth
                                 {...register('email', {
                                     required: 'Este campo es requerido',
@@ -76,9 +86,9 @@ const RegisterPage: NextPage = () => {
                         </Grid>
                         <Grid item xs={12}>
                             <TextField
-                                label="Contraseña"
+                                placeholder='Ingresa tu contraseña'
                                 type='password'
-                                variant="filled"
+                                label="Contraseña"
                                 fullWidth
                                 {...register('password', {
                                     required: 'Este campo es requerido',
@@ -91,25 +101,63 @@ const RegisterPage: NextPage = () => {
 
                         <Grid item xs={12}>
                             <Button
+                                variant='contained'
                                 type="submit"
-                                color="secondary"
-                                className='circular-btn'
                                 size='large'
                                 fullWidth
                             >
-                                Ingresar
+                                Registrarme
                             </Button>
                         </Grid>
 
-                        <Grid item xs={12} display='flex' justifyContent='end'>
-                            <NextLink
-                                href={router.query.p ? `/auth/login?p=${router.query.p}` : '/auth/login'}
-                                passHref legacyBehavior
-                            >
-                                <Link underline='always'>
-                                    ¿Ya tienes cuenta?
-                                </Link>
-                            </NextLink>
+                        <Grid item xs={12} display='flex' flexDirection='column' justifyContent='end'>
+                            <Divider sx={{ width: '100%' }} >Or</Divider>
+                            {/* {
+                                Object.values(providers).map((provider: any) => {
+
+                                    if (provider.id === 'credentials') return (<div key="credentials"></div>);
+
+                                    return (
+                                        <Button
+                                            key={provider.id}
+                                            variant="outlined"
+                                            fullWidth
+                                            color="primary"
+                                            sx={{ mb: 1 }}
+                                            onClick={() => signIn(provider.id)}
+                                        >
+                                            {provider.name}
+                                        </Button>
+                                    )
+
+                                })
+                            } */}
+
+                            <Grid container justifyContent="center" alignItems="center" mb={3}>
+                                <Button disableTouchRipple>
+                                    <Image src="/google.png" width={32} height={32} alt='google' />
+                                </Button>
+                                <Button disableTouchRipple>
+                                    <Image src="/facebook.png" width={32} height={32} alt='google' />
+                                </Button>
+                                <Button disableTouchRipple>
+                                    <Image src="/appled.png" width={32} height={32} alt='google' />
+                                </Button>
+                            </Grid>
+
+                            <Grid container justifyContent="center" textAlign="center">
+                                <Grid item xs={12} mb={1} mt={2}>
+                                    Ya tienes cuenta?
+                                    <NextLink
+                                        href={router.query.p ? `/auth/login?p=${router.query.p}` : '/auth/login'}
+                                        passHref legacyBehavior
+                                    >
+                                        <Link>
+                                            Ingresa
+                                        </Link>
+                                    </NextLink>
+                                </Grid>
+                            </Grid>
                         </Grid>
                     </Grid>
                 </Box>
@@ -117,7 +165,6 @@ const RegisterPage: NextPage = () => {
         </AuthLayout>
     )
 }
-
 
 
 export const getServerSideProps: GetServerSideProps = async ({ req, query }) => {
@@ -130,7 +177,7 @@ export const getServerSideProps: GetServerSideProps = async ({ req, query }) => 
         return {
             redirect: {
                 destination: q.toString(),
-                permanent: false,
+                permanent: false
             }
         }
     }
