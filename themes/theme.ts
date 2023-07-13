@@ -3,7 +3,7 @@ import { createTheme } from "@mui/material";
 export const defaultTheme = createTheme({
     palette: {
         mode: 'light',
-        primary:{
+        primary: {
             main: "#ff8e94"
         }
     },
@@ -51,6 +51,13 @@ export const defaultTheme = createTheme({
                 root: {
                     textDecoration: 'none',
                     marginLeft: 3,
+                }
+            }
+        },
+        MuiAppBar: {
+            styleOverrides: {
+                root: {
+                    backgroundColor: 'white'
                 }
             }
         }

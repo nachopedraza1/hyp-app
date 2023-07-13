@@ -1,7 +1,13 @@
+import { MainLayout } from "@/components/layouts"
+import { Box } from "@mui/material";
 
 const HomePage = () => {
   return (
-    <div>index</div>
+    <MainLayout title="Home" pageDescription="Los mejores productos">
+      <Box sx={{ mt: 6 }}>
+       {/*  <img src="/banner1.gif" width="100%" alt="bannerTest" /> */}
+      </Box>
+    </MainLayout>
   )
 }
 
