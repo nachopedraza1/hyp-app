@@ -26,7 +26,19 @@ const LoginPage: NextPage = () => {
     const [showError, setShowError] = useState(false)
 
     const onLogin = async ({ email, password }: FormData) => {
-        await signIn('credentials', { email, password })
+        setShowError(false)
+        const resp = await signIn('credentials', {
+            email,
+            password,
+            redirect: false,
+        });
+
+        if (resp?.error) {
+            setShowError(true)
+            setTimeout(() => setShowError(false), 3000);
+        } else {
+            router.push('/');
+        }
     }
 
     const [providers, setProviders] = useState<any>({});

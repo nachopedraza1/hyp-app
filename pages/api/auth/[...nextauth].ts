@@ -5,6 +5,7 @@ import Credentials from "next-auth/providers/credentials";
 import GithubProvider from "next-auth/providers/github"
 
 import { dbUser } from "@/database";
+import axios from 'axios';
 
 declare module "next-auth" {
     interface Session {

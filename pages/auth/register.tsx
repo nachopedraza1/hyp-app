@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useContext, useEffect, useState } from 'react';
 import { GetServerSideProps, NextPage } from 'next';
 import { useRouter } from 'next/router';
 import NextLink from 'next/link';
@@ -6,9 +6,10 @@ import Image from 'next/image';
 
 import { getProviders, getSession, signIn } from 'next-auth/react';
 import { useForm } from 'react-hook-form';
+import { AuthContext } from '@/context';
 import { isEmail } from '@/utils';
 
-import { Box, Button, Checkbox, Chip, Divider, FormControlLabel, FormGroup, Grid, Link, TextField, Typography } from '@mui/material';
+import { Box, Button, Chip, Divider, Grid, Link, TextField, Typography } from '@mui/material';
 import { ErrorOutline } from '@mui/icons-material';
 import { AuthLayout } from '@/components/layouts';
 
@@ -23,11 +24,24 @@ const RegisterPage: NextPage = () => {
 
     const router = useRouter();
 
-    const { register, handleSubmit, formState: { errors } } = useForm<FormData>();
-    const [showError, setShowError] = useState(false)
+    const { registerUser } = useContext(AuthContext);
 
-    const onRegister = async ({ email, password }: FormData) => {
-        await signIn('credentials', { email, password })
+    const { register, handleSubmit, formState: { errors } } = useForm<FormData>();
+
+    const [showError, setShowError] = useState(false)
+    const [errorMessage, setErrorMessage] = useState('');
+
+    const onRegister = async ({ name, email, password }: FormData) => {
+        setShowError(false);
+        const { hasError, message } = await registerUser(name, email, password);
+        if (hasError) {
+            setShowError(true);
+            setErrorMessage(message!);
+            setTimeout(() => setShowError(false), 3000);
+            return;
+        }
+
+        await signIn('credentials', { email, password });
     }
 
     const [providers, setProviders] = useState<any>({});
@@ -46,7 +60,7 @@ const RegisterPage: NextPage = () => {
                         <Grid item xs={12}>
                             <Typography variant='h4' fontWeight={600}>Registro</Typography>
                             <Chip
-                                label="No reconocemos ese usuario / contraseña"
+                                label={errorMessage}
                                 color="error"
                                 icon={<ErrorOutline />}
                                 className="fadeIn"
@@ -112,26 +126,6 @@ const RegisterPage: NextPage = () => {
 
                         <Grid item xs={12} display='flex' flexDirection='column' justifyContent='end'>
                             <Divider sx={{ width: '100%' }} >Or</Divider>
-                            {/* {
-                                Object.values(providers).map((provider: any) => {
-
-                                    if (provider.id === 'credentials') return (<div key="credentials"></div>);
-
-                                    return (
-                                        <Button
-                                            key={provider.id}
-                                            variant="outlined"
-                                            fullWidth
-                                            color="primary"
-                                            sx={{ mb: 1 }}
-                                            onClick={() => signIn(provider.id)}
-                                        >
-                                            {provider.name}
-                                        </Button>
-                                    )
-
-                                })
-                            } */}
 
                             <Grid container justifyContent="center" alignItems="center" mb={3}>
                                 <Button disableTouchRipple>
