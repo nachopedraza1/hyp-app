@@ -51,6 +51,7 @@ export const defaultTheme = createTheme({
                 root: {
                     textDecoration: 'none',
                     marginLeft: 3,
+                    color: 'black'
                 }
             }
         },
@@ -58,6 +59,14 @@ export const defaultTheme = createTheme({
             styleOverrides: {
                 root: {
                     backgroundColor: 'white'
+                }
+            }
+        },
+        MuiSvgIcon: {
+            styleOverrides: {
+                root: {
+                    color: "#ff8e94",
+                    fontSize:"30px"
                 }
             }
         }

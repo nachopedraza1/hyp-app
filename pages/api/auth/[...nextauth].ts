@@ -1,11 +1,10 @@
 import { NextAuthOptions } from "next-auth";
 import NextAuth from "next-auth/next";
 
-import Credentials from "next-auth/providers/credentials";
-import GithubProvider from "next-auth/providers/github"
+import GithubProvider from "next-auth/providers/github";
+import GoogleProvider from "next-auth/providers/google";
 
 import { dbUser } from "@/database";
-import axios from 'axios';
 
 declare module "next-auth" {
     interface Session {
@@ -19,25 +18,18 @@ declare module "next-auth" {
 
 export const authOptions: NextAuthOptions = {
     providers: [
-        Credentials({
-            name: 'Custom Login',
-            credentials: {
-                email: { label: 'Correo:', type: 'email', placeholder: 'correo@google.com' },
-                password: { label: 'Contraseña:', type: 'password', placeholder: 'Contraseña' },
-            },
-            async authorize(credentials) {
-                return await dbUser.findUser(credentials!.email, credentials!.password)
-            }
-        }),
         GithubProvider({
             clientId: process.env.GITHUB_ID!,
             clientSecret: process.env.GITHUB_SECRET!,
         }),
+        GoogleProvider({
+            clientId: process.env.GOOGLE_CLIENT_ID!,
+            clientSecret: process.env.GOOGLE_CLIENT_SECRET!
+        })
     ],
 
     pages: {
-        signIn: '/auth/login',
-        newUser: '/auth/register'
+        signIn: '/',
     },
 
     session: {
@@ -54,10 +46,6 @@ export const authOptions: NextAuthOptions = {
                 switch (account.type) {
                     case 'oauth':
                         token.user = await dbUser.oAuthToDbUser(user?.email || '', user?.name || '');
-                        break;
-
-                    case 'credentials':
-                        token.user = user;
                         break;
                 }
 

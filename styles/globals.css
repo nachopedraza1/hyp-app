@@ -36,23 +36,11 @@ input:-webkit-autofill:active {
     animation-name: fadeIn;
 }
 
-.bg-auth {
-    background: url('/bgauth.jpg');
-    background-size: cover;
-    background-position: center bottom;
-    min-height: 100vh;
+.menu-link {
+    margin: 0px 10px;
+    padding-bottom: 5px;
 }
 
-
-.form-sign {
-    border-radius: 20px;
-    border: 1px solid rgba(0, 0, 0, 0.20);
-    background: rgba(255, 255, 255, 0);
-    box-shadow: -8px 4px 5px 0px rgba(0, 0, 0, 0.24);
-    backdrop-filter: blur(26.5px);
-
-    width: 430px;
-    padding: 60px 40px 30px 40px;
+.menu-link:hover {
+    border-bottom: 2px solid #ff8e94
 }
-
-/* ff8e94 */
