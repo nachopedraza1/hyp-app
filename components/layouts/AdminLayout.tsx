@@ -4,7 +4,6 @@ import Box from '@mui/material/Box';
 import Divider from '@mui/material/Divider';
 import Drawer from '@mui/material/Drawer';
 import IconButton from '@mui/material/IconButton';
-import InboxIcon from '@mui/icons-material/MoveToInbox';
 import List from '@mui/material/List';
 import ListItem from '@mui/material/ListItem';
 import ListItemButton from '@mui/material/ListItemButton';
@@ -125,7 +124,7 @@ export const AdminLayout: React.FC<Props> = ({ children, title, window, pageDesc
                         open={mobileOpen}
                         onClose={handleDrawerToggle}
                         ModalProps={{
-                            keepMounted: true, // Better open performance on mobile.
+                            keepMounted: true
                         }}
                         sx={{
                             display: { xs: 'block', sm: 'none' },
@@ -150,9 +149,9 @@ export const AdminLayout: React.FC<Props> = ({ children, title, window, pageDesc
                     sx={{ flexGrow: 1, p: 3, width: { sm: `calc(100% - ${drawerWidth}px)` } }}
                 >
                     <Toolbar />
-                    <Typography >
-                        {children}
-                    </Typography>
+
+                    {children}
+
                 </Box>
             </Box>
         </>

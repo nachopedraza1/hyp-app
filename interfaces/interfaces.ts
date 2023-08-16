@@ -1,7 +1,7 @@
 export interface IProduct {
-    _id: string;
+    _id?: string;
     description: string;
-    images: string[];
+    images: string;
     inStock: number;
     price: number;
     sizes: ISize[];
@@ -9,8 +9,8 @@ export interface IProduct {
     tags: string[];
     title: string;
     type: IType;
-    craetedAt: string,
-    updatedAt: string,
+    craetedAt?: string,
+    updatedAt?: string,
 }
 
 
